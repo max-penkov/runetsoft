@@ -54,6 +54,9 @@ class ProductsImportedListener
     {
         $results = $this->reader->iterate($event->getPath());
         foreach ($results as $item) {
+            if (empty($item)) {
+                continue;
+            }
             try {
                 $result = $this->parserService->parse($item);
                 $this->productService->saveParsedProducts($item, $result);
