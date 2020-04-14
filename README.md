@@ -1,4 +1,8 @@
 # Test RuNetSoft
+
+* [Решение 1](https://github.com/locord/runetsoft/blob/master/task1.txt)
+* [Решение 2](https://github.com/locord/runetsoft/blob/master/task2.txt)
+
 В базе хранятся  товары (автомобильные шины), написать скрипт, который разобьет шины по характеристикам.  Ниже представлена схема, как из названия получаются характеристики.
 
 Nokian Hakkapeliitta R2 SUV 205/70 R15 100R TT  Летние

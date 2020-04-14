@@ -1,0 +1,106 @@
+https://www.db-fiddle.com/f/vNYWGdBvfMigLNWipFGoYB/30
+
+/*
+Группы пользователей
+*/
+CREATE TABLE project_groups (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+/*
+Пользователи
+*/
+CREATE TABLE project_members (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+	`group_id` int(11) NOT NULL,
+    `email` varchar(255) NOT NULL,
+  	`status` tinyint(1) DEFAULT 0,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`group_id`) REFERENCES project_groups (`id`) ON DELETE 	CASCADE ON UPDATE CASCADE
+);
+
+/*
+Проекты
+*/
+CREATE TABLE projects (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+  	`status` tinyint(1) DEFAULT 0,
+    PRIMARY KEY (`id`)
+);
+
+/*
+Участники проекта
+*/
+CREATE TABLE project_membership (
+  	`member_id` int(11) NOT NULL,
+    `project_id` int(11) NOT NULL,
+    FOREIGN KEY (`project_id`) REFERENCES projects (`id`) ON DELETE 	CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`member_id`) REFERENCES project_members (`id`) ON DELETE 	CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (`member_id`, `project_id`)
+);
+
+
+INSERT INTO project_groups
+	(id, name)
+VALUES
+  (1,'Programmist'),
+  (2,'Tester'),
+  (3,'Manager');
+
+INSERT INTO project_members
+  (id, name, group_id, email, status)
+VALUES
+  (1, 'Ivan', 1, 'ivan@mail.ru', 1),
+  (2, 'John', 1, 'john@mail.ru', 1),
+  (3, 'Test', 2, 'test@mail.ru', 1),
+  (4, 'Noname', 1, 'ivadfn@mail.ru', 0),
+  (5, 'Mike', 3, 'mike@mail.ru', 1),
+  (6, 'Lebron', 2, 'leb@mail.ru', 1),
+  (7, 'Trump', 1, 'ivandf@mail.ru', 1),
+  (8, 'Igor', 1, 'ig@mail.ru', 1),
+  (9, 'Nick', 2, 'nik@mail.ru', 1),
+  (10, 'Petr', 3, 'petr@mail.ru', 1),
+    (11, 'loco', 1, 'loco@mail.ru', 1);
+
+INSERT INTO projects
+	(id, name)
+VALUES
+  (1, 'MTS'),
+  (2, 'Beeline'),
+  (3, 'Tele2'),
+  (4, 'Megafon');
+
+INSERT INTO project_membership
+	(member_id, project_id)
+VALUES
+	(1, 1),
+    (2, 1),
+    (3, 1),
+    (4, 1),
+    (2, 2),
+    (5, 2),
+    (6, 3),
+    (7, 3),
+    (8, 3),
+    (1, 3),
+    (2, 3),
+    (8, 1),
+    (7, 1),
+    (11, 1);
+
+// Запрос
+SELECT p.id, p.name, COUNT(pms.member_id) AS members_count
+FROM projects AS p
+
+INNER JOIN project_membership  as pms
+ON p.id = pms.project_id
+
+INNER JOIN project_members as pm ON pms.member_id = pm.id
+INNER JOIN project_groups AS pg ON pg.id = pm.group_id
+WHERE pg.name = 'Programmist' AND pm.status = 1
+
+GROUP BY p.id having COUNT(members_count) > 3 ORDER BY members_count DESC;
